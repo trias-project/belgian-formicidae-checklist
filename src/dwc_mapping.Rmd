@@ -1,0 +1,479 @@
+---
+title: "Darwin Core mapping"
+subtitle: "For: Checklist of the belgian Formicidae"
+author:
+- Lien Reyserhove
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+    number_sections: yes
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This document describes how we map the checklist data to Darwin Core. The source file for this document can be found [here](https://github.com/trias-project/ad-hoc-checklist/blob/master/src/dwc_mapping.Rmd).
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+Load libraries:
+
+```{r}
+library(tidyverse)      # To do data science
+library(magrittr)       # To use %<>% pipes
+library(here)           # To find files
+library(janitor)        # To clean input data
+library(digest)         # To generate hashes
+```
+
+# Read source data
+
+The data is maintained in [this Google Spreadsheet](https://docs.google.com/spreadsheets/d/1Rvb9qwpSrflZ9bABvGa-F7BhHROsQCSn/edit#gid=1231119869).
+
+Read the relevant worksheet (published as csv):
+
+```{r read_source_data}
+input_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTDe07wnCsBlbTnY7-5loI8Bd5Z4G_ydBdi0MhgMUz23CiAAxzSf0KSi3UL6y2ePA/pub?gid=1231119869&single=true&output=csv")
+```
+
+Copy the source data to the repository to keep track of changes:
+
+```{r}
+write_csv(input_data, here("data", "raw", "belgian_formicidae_dump.csv"), na = "")
+```
+
+Preview data: 
+
+```{r}
+input_data %>% head()
+```
+# Preprocessing
+
+## Tidy data
+
+Clean data somewhat:
+
+```{r}
+input_data %<>%
+  remove_empty("rows") %>%    # Remove empty rows
+  clean_names()               # Have sensible (lowercase) column names
+```
+
+## Scientific names
+
+No cleaning required.
+
+## Taxon IDs
+
+To link taxa with information in the extension(s), each taxon needs a unique and relatively stable `taxonID`. Here we create one in the form of `dataset_shortname:taxon:hash`, where `hash` is unique code based on scientific name and kingdom (that will remain the same as long as scientific name and kingdom remain the same):
+
+```{r}
+vdigest <- Vectorize(digest) # Vectorize digest function to work with vectors
+input_data %<>% mutate(taxon_id = paste(
+  "belgian-formicidae-checklist",
+  "taxon",
+  vdigest(paste(scientific_name, kingdom), algo = "md5"),
+  sep = ":"
+))
+```
+
+Preview data:
+
+```{r}
+input_data %>% head()
+```
+
+# Darwin Core mapping
+
+## Taxon core
+
+Create a dataframe with unique taxa only (ignoring multiple distribution rows):
+
+```{r}
+taxon <- input_data %>% distinct(taxon_id, .keep_all = TRUE)
+```
+
+Map the data to [Darwin Core Taxon](http://rs.gbif.org/core/dwc_taxon_2015-04-24.xml).
+ 
+### language
+
+```{r}
+taxon %<>% mutate(dwc_language = "en")
+```
+
+### license
+
+```{r}
+taxon %<>% mutate(dwc_license = "http://creativecommons.org/publicdomain/zero/1.0/")
+```
+
+### rightsHolder
+
+```{r}
+taxon %<>% mutate(dwc_rightsHolder = "RBINS") 
+```
+
+### accessRights
+
+```{r}
+taxon %<>% mutate(dwc_accessRights = "https://www.inbo.be/en/norms-data-use") 
+```
+
+### datasetID
+
+```{r}
+taxon %<>% mutate(dwc_datasetID = "") 
+```
+
+### institutionCode
+
+```{r}
+taxon %<>% mutate(dwc_institutionCode = "RBINS") 
+```
+
+### datasetName
+
+```{r}
+taxon %<>% mutate(dwc_datasetName = "Checklist of the ants in Belgium") 
+```
+
+### taxonID
+
+```{r}
+taxon %<>% mutate(dwc_taxonID = taxon_id)
+```
+
+### scientificName
+
+```{r}
+taxon %<>% mutate(dwc_scientificName = scientific_name) 
+```
+
+### kingdom
+
+```{r}
+taxon %<>% mutate(dwc_kingdom = kingdom)
+```
+
+### phylum
+
+```{r}
+taxon %<>% mutate(dwc_phylum = phylum)
+```
+
+### class
+
+```{r}
+taxon %<>% mutate(dwc_class = class)
+```
+
+### order
+
+```{r}
+taxon %<>% mutate(dwc_order = order)
+```
+
+### family
+
+```{r}
+taxon %<>% mutate(dwc_family = family)
+```
+
+### genus
+
+```{r}
+taxon %<>% mutate(dwc_genus = genus)
+```
+
+### taxonRank
+
+```{r}
+taxon %<>% mutate(dwc_taxonRank = taxon_rank)
+```
+
+### nomenclaturalCode
+
+```{r}
+taxon %<>% mutate(dwc_nomenclaturalCode = nomenclatural_code)
+```
+
+## Distribution extension
+
+Create a dataframe with all data (including multiple distributions):
+
+```{r}
+distribution <- input_data
+```
+
+Map the data to [Species Distribution](http://rs.gbif.org/extension/gbif/1.0/distribution.xml).
+
+### taxonID
+
+```{r}
+distribution %<>% mutate(dwc_taxonID = taxon_id) 
+```
+
+### locationID
+
+Currently map for Belgian regions only:
+
+```{r}
+distribution %<>% mutate(dwc_locationID = case_when(
+  is.na(location) & country_code == "BE" ~ "ISO_3166-2:BE",
+  location == "Flanders" ~ "ISO_3166-2:BE-VLG",
+  location == "Wallonia" ~ "ISO_3166-2:BE-WAL",
+  location == "Brussels" ~ "ISO_3166-2:BE-BRU"
+))
+```
+
+### locality
+
+Currently map for Belgian regions only:
+
+```{r}
+distribution %<>% mutate(dwc_locality = case_when(
+  is.na(location) & country_code == "BE" ~ "Belgium",
+  location == "Flanders" ~ "Flemish Region",
+  location == "Wallonia" ~ "Walloon Region",
+  location == "Brussels" ~ "Brussels-Capital Region"
+))
+```
+
+### countryCode
+
+```{r}
+distribution %<>% mutate(dwc_countryCode = country_code)
+```
+
+### occurrenceStatus
+
+```{r}
+distribution %<>% mutate(dwc_occurrenceStatus = occurrence_status)
+```
+
+### establishmentMeans
+
+```{r}
+distribution %<>% mutate(dwc_establishmentMeans = case_when(
+  degree_of_establishment == "established" | 
+  degree_of_establishment == "casual" |
+  degree_of_establishment == "invasive" ~ "introduced",
+  TRUE ~ degree_of_establishment))
+```
+
+### degreeOfEstablishment
+
+```{r}
+distribution %<>% mutate(dwc_degreeOfEstablishment = degree_of_establishment) 
+```
+
+### pathway
+
+```{r}
+distribution %<>% mutate(dwc_pathway = pathway_lien) 
+```
+
+
+### eventDate
+
+```{r}
+distribution %<>% mutate(dwc_eventDate = case_when(
+  is.na(date_first_observation) & is.na(date_last_observation) ~ "",
+  is.na(date_first_observation) & !is.na(date_last_observation) ~ as.character(date_last_observation),
+  !is.na(date_first_observation) & is.na(date_last_observation) ~ as.character(date_first_observation),
+  !is.na(date_first_observation) & !is.na(date_last_observation) ~ as.character(paste(date_first_observation, date_last_observation, sep = "/")))) 
+```
+
+### threatStatus
+
+### source
+
+```{r}
+distribution %<>% mutate(dwc_source = references)
+```
+
+### occurrenceRemarks
+
+```{r}
+distribution %<>% mutate(dwc_occurrenceRemarks = remarks) 
+```
+
+## Species profile extension
+
+In this extension we will express broad habitat characteristics of the species (e.g. `isTerrestrial`) from `realm`.
+
+Create a dataframe with unique taxa only (ignoring multiple distribution rows):
+
+```{r}
+species_profile <- input_data %>% distinct(taxon_id, .keep_all = TRUE)
+```
+
+Only keep records for which `realm` is not empty:
+
+```{r}
+species_profile %<>% filter(!is.na(realm))
+```
+
+Inspect values:
+
+```{r}
+species_profile %>%
+  group_by(realm) %>%
+  count()
+```
+
+Map the data to [Species Profile](http://rs.gbif.org/extension/gbif/1.0/speciesprofile.xml).
+
+### taxonID
+
+```{r}
+species_profile %<>% mutate(dwc_taxonID = taxon_id)
+```
+
+### isMarine, isFreshwater, isTerrestrial
+
+```{r}
+species_profile <- species_profile %>% 
+  mutate(dwc_isMarine = "FALSE") %>% 
+  mutate(dwc_isFreshwater = "FALSE") %>%
+  mutate(dwc_isTerrestrial = "TRUE") 
+```
+
+
+## Description extension
+
+In the description extension we want to include several important characteristics (hereafter referred to as descriptors) about the species:
+- Native range
+
+We will express native range information from `native_range`, separated and gathered.
+
+Create a dataframe with unique taxa only (ignoring multiple distribution rows):
+
+```{r}
+description <- input_data %>% distinct(taxon_id, .keep_all = TRUE)
+```
+
+Separate values on `|` in a maximum of 3 columns:
+
+```{r}
+description %<>% separate(
+  native_range,
+  into = paste0("range_", c(1:4)),
+  sep = " \\| ",
+  extra = "drop"
+)
+```
+Gather and trim values:
+
+```{r}
+description %<>% gather(key, value, starts_with("range_"), na.rm = TRUE) %>%
+  mutate(value = str_trim(value))
+```
+
+Inspect values:
+
+```{r}
+description %>%
+  group_by(value) %>%
+  count()
+```
+
+Clean native range information in `value` somewhat:
+
+```{r}
+description %<>% mutate(value = str_to_title(value))
+```
+
+### taxonID
+
+```{r}
+description %<>% mutate(dwc_taxonID = taxon_id)
+```
+
+### description
+
+```{r}
+description %<>% mutate(dwc_description = value)
+```
+
+### type
+
+```{r}
+description %<>% mutate(dwc_type = "native range")
+```
+
+### language
+
+```{r}
+description %<>% mutate(dwc_language = "en")
+```
+
+# Post-processing
+
+Only keep the Darwin Core columns:
+
+```{r}
+taxon %<>% select(starts_with("dwc_"))
+distribution %<>% select(starts_with("dwc_"))
+species_profile %<>% select(starts_with("dwc_"))
+description %<>% select(starts_with("dwc_"))
+```
+
+Drop the `dwc_` prefix:
+
+```{r}
+colnames(taxon) <- str_remove(colnames(taxon), "dwc_")
+colnames(distribution) <- str_remove(colnames(distribution), "dwc_")
+colnames(species_profile) <- str_remove(colnames(species_profile), "dwc_")
+colnames(description) <- str_remove(colnames(description), "dwc_")
+```
+
+Sort on `taxonID` (to maintain some consistency between updates of the dataset):
+
+```{r}
+taxon %<>% arrange(taxonID)
+distribution %<>% arrange(taxonID)
+species_profile %<>% arrange(taxonID)
+description %<>% arrange(taxonID)
+```
+
+Preview taxon core:
+
+```{r}
+taxon %>% head()
+```
+
+Preview distribution extension:
+
+```{r}
+distribution %>% head()
+```
+
+Preview species profile extension:
+
+```{r}
+species_profile %>% head()
+```
+
+Preview description extension:
+
+```{r}
+description %>% head(10)
+```
+
+Save to CSV:
+
+```{r}
+write_csv(taxon, here("data", "processed", "taxon.csv"), na = "")
+write_csv(literature_references, here("data", "processed", "references.csv"), na = "")
+write_csv(distribution, here("data", "processed", "distribution.csv"), na = "")
+write_csv(species_profile, here("data", "processed", "speciesprofile.csv"), na = "")
+write_csv(description, here("data", "processed", "description.csv"), na = "")
+```
