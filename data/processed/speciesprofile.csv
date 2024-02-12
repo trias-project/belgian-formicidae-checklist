@@ -1,9 +1,11 @@
 taxonID,isMarine,isFreshwater,isTerrestrial
 belgian-formicidae-checklist:taxon:00853c55544ff7fe4f96d28d4ecd850b,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:014918b80fb792fac60dc4170ec5e07d,FALSE,FALSE,TRUE
+belgian-formicidae-checklist:taxon:06b77f14573712f858ebe8b821715c59,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:0aaff6820c2a6716a993a4da7242b7aa,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:0b0c40b4abdd6903755d8a79e43cb858,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:0b2887204e24813048726a98a0282aed,FALSE,FALSE,TRUE
+belgian-formicidae-checklist:taxon:0c00a7f95bf886620aaf230ef19c4702,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:0d7d6fd91f619552285eb56d4d191260,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:0dbc05f5d94a2e738238300990ce2211,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:116fc35685c3bd11b23a68a14041e0d3,FALSE,FALSE,TRUE
@@ -17,10 +19,8 @@ belgian-formicidae-checklist:taxon:1a01ace56d7703eac736da8647d74a4a,FALSE,FALSE,
 belgian-formicidae-checklist:taxon:1d59be9f5c875dc89dabda9fa9046b40,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:200b8c80161b4c9dfa9284fd9041e310,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:2221bb1c3965593a1d5a4b15bd638283,FALSE,FALSE,TRUE
-belgian-formicidae-checklist:taxon:2290876e66f67ea6f8d305c3435b3aef,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:231669399c264299ac25a4323ccdf52f,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:27bb7a9ac86ba2c5def015e533b0e385,FALSE,FALSE,TRUE
-belgian-formicidae-checklist:taxon:28f3c8dd6a8aa7d9ce266727879cec61,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:2d57d07e1d3d3026cac2d4d4d94a4421,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:2e6e421459effa52fce5a7f167f6b19e,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:30418a9e5d78ae9f5ed8c0258cdcf042,FALSE,FALSE,TRUE
@@ -37,7 +37,9 @@ belgian-formicidae-checklist:taxon:456ba539144509ecf100ab48a5ddafc7,FALSE,FALSE,
 belgian-formicidae-checklist:taxon:46f75db2bfca28104a610984172f1d16,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:48c90c933e35231900b9f8a82c7d5236,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:4b6424aeaf81a772be122532e0c39b05,FALSE,FALSE,TRUE
+belgian-formicidae-checklist:taxon:4bdb273fe12ff26de8986f1085cb9fdb,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:4d268d72a036f8976ebc59d598d6dc5a,FALSE,FALSE,TRUE
+belgian-formicidae-checklist:taxon:4f2d6245c6b2a3ef82b1c29080ac3902,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:501ddc761e9ded796dc8f9718942f845,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:52a0b1054257e84e5e96a61b52f6b95b,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:54fd64a0871b4b830b30c43274d43630,FALSE,FALSE,TRUE
@@ -57,11 +59,11 @@ belgian-formicidae-checklist:taxon:6ace4f4bb6441dcd4d979df6325d1892,FALSE,FALSE,
 belgian-formicidae-checklist:taxon:6b35290c57876762e83df95f30352fa3,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:727c00b8e299ed34d52239b3b92bf805,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:72ff93034eb459a97dd58a4284598b6c,FALSE,FALSE,TRUE
+belgian-formicidae-checklist:taxon:73e29320b497b7abe292dbd767fbf50f,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:73ea2c71df8bc15f9173f693e5197a82,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:785e2f0229c16b3b131a3e058d4fe5a1,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:7c71f4bd5a550f552ca4ccecd033c75d,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:82243753baf777aef94e1e2b32bdc278,FALSE,FALSE,TRUE
-belgian-formicidae-checklist:taxon:84c3474b7bac93adde2b71f1cede35eb,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:86b93f257457bfbb98e33ef03ed2ac0c,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:91ee6ec970ae60ec93cf6fe6ce65b594,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:93854deb27d5ebc09e04446886458f1f,FALSE,FALSE,TRUE
@@ -81,6 +83,7 @@ belgian-formicidae-checklist:taxon:b59f36d97f774dd4b9fc18ebc40ac79d,FALSE,FALSE,
 belgian-formicidae-checklist:taxon:b9da4e31015f1c1606ea866e56697b7f,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:b9e9ca1d8235b6b860173304ba34ffbd,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:ba54c9e02aa7375a79d8c29d41f60857,FALSE,FALSE,TRUE
+belgian-formicidae-checklist:taxon:bc239f5d82b5b115dee926b116ed1dad,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:be9aff4bed71eda660ce70d34dd71706,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:c356f924f3224daf06db73deb2c17c43,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:c64ca1e6a2e2f6518f42088455bf18bc,FALSE,FALSE,TRUE
@@ -96,5 +99,4 @@ belgian-formicidae-checklist:taxon:e05ab634ff279f40c68efb49a827234a,FALSE,FALSE,
 belgian-formicidae-checklist:taxon:ebb0d24754105a1e70c0e5dcdd4bfb65,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:ebf2c57b0319ced5bd44208bd306866f,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:f3a0c5f856c771f90a05d57306195acf,FALSE,FALSE,TRUE
-belgian-formicidae-checklist:taxon:f9cc3be38e6ef12ad8731ddce73e0c7e,FALSE,FALSE,TRUE
 belgian-formicidae-checklist:taxon:fd373fcdb559cd7b0c5c6099a703533f,FALSE,FALSE,TRUE
