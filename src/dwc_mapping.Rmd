@@ -296,7 +296,7 @@ distribution %<>% mutate(dwc_eventDate = case_when(
 ### source
 
 ```{r}
-distribution %<>% mutate(dwc_source = references)
+distribution %<>% mutate(dwc_source = source)
 ```
 
 ### occurrenceRemarks
