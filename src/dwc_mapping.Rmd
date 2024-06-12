@@ -125,7 +125,15 @@ Not all cells for `date_first_observation` (DFO) and/or `date_last_observation` 
 ```{r}
 distribution <-
   input_data %>%
-  #gather(key, pathway, starts_with("introduction_pathway"), na.rm = TRUE) %>%
+  mutate(
+    introduction_pathway_1 =
+      ifelse(is.na(introduction_pathway_1), "no value", introduction_pathway_1)
+  ) %>%
+  pivot_longer(
+    names_to = "key", 
+    values_to = "pathway", 
+    starts_with("introduction_pathway"),
+    values_drop_na = TRUE) %>%
   mutate(
     taxonID = taxon_id,
     locationID = case_when(
@@ -142,7 +150,11 @@ distribution <-
     occurrenceStatus = occurrence_status,
     establishmentMeans = establishment_means,
     degreeOfEstablishment = degree_of_establishment,
-    pathway = pathway_lien,
+    pathway = case_when(
+      pathway == "no value" ~ NA,
+      .default = pathway
+    ),
+    # pathway = pathway_lien,
     eventDate = case_when(
       is.na(date_first_observation) & is.na(date_last_observation) ~ NA,
       is.na(date_first_observation) & !is.na(date_last_observation) ~ paste0("/", date_last_observation),
@@ -151,10 +163,12 @@ distribution <-
     ),
     source = source,
     occurrenceRemarks = occurrence_remarks
-  ) %>% 
-  select("taxonID", "locationID", "locality", "countryCode", "occurrenceStatus",
-         "establishmentMeans", "degreeOfEstablishment", "pathway", "eventDate",
-         "source", "occurrenceRemarks") %>% 
+  ) %>%
+  select(
+    "taxonID", "locationID", "locality", "countryCode", "occurrenceStatus",
+    "establishmentMeans", "degreeOfEstablishment", "pathway", "eventDate",
+    "source", "occurrenceRemarks"
+  ) %>%
   arrange(taxonID)
 ```
 
