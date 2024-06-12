@@ -40,7 +40,9 @@ The data is maintained in [this Google Spreadsheet](https://docs.google.com/spre
 Read the relevant worksheet (published as csv):
 
 ```{r read_source_data}
-input_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTDe07wnCsBlbTnY7-5loI8Bd5Z4G_ydBdi0MhgMUz23CiAAxzSf0KSi3UL6y2ePA/pub?gid=1231119869&single=true&output=csv")
+# input_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTDe07wnCsBlbTnY7-5loI8Bd5Z4G_ydBdi0MhgMUz23CiAAxzSf0KSi3UL6y2ePA/pub?gid=1231119869&single=true&output=csv")
+
+input_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTl8IEk2fProQorMu5xKQPdMXl3OQp-c0f6eBXitv0BiVFZ3JSJCde0PtbFXuETgguf6vK8b43FDX1C/pub?gid=1172557183&single=true&output=csv")
 ```
 
 Copy the source data to the repository to keep track of changes:
@@ -302,7 +304,7 @@ distribution %<>% mutate(dwc_source = source)
 ### occurrenceRemarks
 
 ```{r}
-distribution %<>% mutate(dwc_occurrenceRemarks = remarks) 
+distribution %<>% mutate(dwc_occurrenceRemarks = occurrence_remarks) 
 ```
 
 ## Species profile extension
