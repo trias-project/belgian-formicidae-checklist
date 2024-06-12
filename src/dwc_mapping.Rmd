@@ -112,103 +112,54 @@ taxon <-
 
 ## Distribution extension
 
-Create a dataframe with all data (including multiple distributions):
+Create a dataframe with all data (including multiple distributions). . Map the data to [Species Distribution](http://rs.gbif.org/extension/gbif/1.0/distribution.xml).
 
 ```{r}
-distribution <- input_data
-```
-
-Map the data to [Species Distribution](http://rs.gbif.org/extension/gbif/1.0/distribution.xml).
-
-### taxonID
-
-```{r}
-distribution %<>% mutate(dwc_taxonID = taxon_id) 
-```
-
-### locationID
-
-Currently map for Belgian regions only:
-
-```{r}
-distribution %<>% mutate(dwc_locationID = case_when(
-  is.na(location) & country_code == "BE" ~ "ISO_3166-2:BE",
-  location == "Flanders" ~ "ISO_3166-2:BE-VLG",
-  location == "Wallonia" ~ "ISO_3166-2:BE-WAL",
-  location == "Brussels" ~ "ISO_3166-2:BE-BRU"
-))
-```
-
-### locality
-
-Currently map for Belgian regions only:
-
-```{r}
-distribution %<>% mutate(dwc_locality = case_when(
-  is.na(location) & country_code == "BE" ~ "Belgium",
-  location == "Flanders" ~ "Flemish Region",
-  location == "Wallonia" ~ "Walloon Region",
-  location == "Brussels" ~ "Brussels-Capital Region"
-))
-```
-
-### countryCode
-
-```{r}
-distribution %<>% mutate(dwc_countryCode = country_code)
-```
-
-### occurrenceStatus
-
-```{r}
-distribution %<>% mutate(dwc_occurrenceStatus = occurrence_status)
-```
-
-### establishmentMeans
-
-```{r}
-distribution %<>% mutate(dwc_establishmentMeans = case_when(
-  degree_of_establishment == "established" | 
-  degree_of_establishment == "casual" |
-  degree_of_establishment == "invasive" ~ "introduced",
-  TRUE ~ degree_of_establishment))
-```
-
-### degreeOfEstablishment
-
-```{r}
-distribution %<>% mutate(dwc_degreeOfEstablishment = degree_of_establishment) 
-```
-
-### pathway
-
-```{r}
-distribution %<>% mutate(dwc_pathway = pathway_lien) 
-```
-
-
-### eventDate
-
-```{r}
-distribution %<>% mutate(dwc_eventDate = case_when(
-  is.na(date_first_observation) & is.na(date_last_observation) ~ "",
-  is.na(date_first_observation) & !is.na(date_last_observation) ~ as.character(date_last_observation),
-  !is.na(date_first_observation) & is.na(date_last_observation) ~ as.character(date_first_observation),
-  !is.na(date_first_observation) & !is.na(date_last_observation) ~ as.character(paste(date_first_observation, date_last_observation, sep = "/")))) 
-```
-
-### threatStatus
-
-### source
-
-```{r}
-distribution %<>% mutate(dwc_source = source)
-```
-
-### occurrenceRemarks
-
-```{r}
-distribution %<>% mutate(dwc_occurrenceRemarks = occurrence_remarks) 
+distribution <-
+  input_data %>%
+  #gather(key, pathway, starts_with("introduction_pathway"), na.rm = TRUE) %>%
+  mutate(
+    taxonID = taxon_id,
+    locationID = case_when(
+      location == "Flanders" ~ "ISO_3166-2:BE-VLG",
+      location == "Wallonia" ~ "ISO_3166-2:BE-WAL",
+      location == "Brussels" ~ "ISO_3166-2:BE-BRU"
+    ),
+    locality = case_when(
+      location == "Flanders" ~ "Flemish Region",
+      location == "Wallonia" ~ "Walloon Region",
+      location == "Brussels" ~ "Brussels-Capital Region"
+    ),
+    countryCode = country_code,
+    occurrenceStatus = occurrence_status,
+    #establishmentMeans = establishment_means,
+    establishmentMeans = case_when(
+      degree_of_establishment == "established" |
+        degree_of_establishment == "casual" |
+        degree_of_establishment == "invasive" ~ "introduced",
+      TRUE ~ degree_of_establishment
+    ),
+    degreeOfEstablishment = degree_of_establishment,
+    pathway = pathway_lien,
+    # eventDate = case_when(
+    #   is.na(date_first_observation) & is.na(date_last_observation) ~ NA,
+    #   is.na(date_first_observation) & !is.na(date_last_observation) ~ paste0("/", date_last_observation),
+    #   !is.na(date_first_observation) & is.na(date_last_observation) ~ paste0(date_first_observation, "/"),
+    #   !is.na(date_first_observation) & !is.na(date_last_observation) ~ paste(date_first_observation, date_last_observation, sep = "/")
+    # ),
+    eventDate = case_when(
+      is.na(date_first_observation) & is.na(date_last_observation) ~ "",
+      is.na(date_first_observation) & !is.na(date_last_observation) ~ as.character(date_last_observation),
+      !is.na(date_first_observation) & is.na(date_last_observation) ~ as.character(date_first_observation),
+      !is.na(date_first_observation) & !is.na(date_last_observation) ~ as.character(paste(date_first_observation, date_last_observation, sep = "/"))
+    ),
+    source = source,
+    occurrenceRemarks = occurrence_remarks
+  ) %>% 
+  select("taxonID", "locationID", "locality", "countryCode", "occurrenceStatus",
+         "establishmentMeans", "degreeOfEstablishment", "pathway", "eventDate",
+         "source", "occurrenceRemarks") %>% 
+  arrange(taxonID)
 ```
 
 ## Species profile extension
@@ -270,34 +221,6 @@ description <-
     language = "en"
     ) %>% 
   arrange(taxonID)
-```
-
-# Post-processing
-
-Only keep the Darwin Core columns:
-
-```{r}
-distribution %<>% select(starts_with("dwc_"))
-```
-
-Drop the `dwc_` prefix:
-
-```{r}
-colnames(distribution) <- str_remove(colnames(distribution), "dwc_")
-```
-
-Sort on `taxonID` (to maintain some consistency between updates of the dataset):
-
-```{r}
-distribution %<>% arrange(taxonID)
-```
-
-
-
-Preview distribution extension:
-
-```{r}
-distribution %>% head()
 ```
 
 
