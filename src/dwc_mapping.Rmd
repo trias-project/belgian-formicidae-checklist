@@ -35,14 +35,12 @@ library(digest)         # To generate hashes
 
 # Read source data
 
-The data is maintained in [this Google Spreadsheet](https://docs.google.com/spreadsheets/d/1Rvb9qwpSrflZ9bABvGa-F7BhHROsQCSn/edit#gid=1231119869).
+The data is maintained in [this Google Spreadsheet](https://docs.google.com/spreadsheets/d/1LeXXbry2ArK2rngsmFjz_xErwE1KwQ8ujtvHNmTVA6E/edit#gid=1172557183).
 
 Read the relevant worksheet (published as csv):
 
 ```{r read_source_data}
-# input_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTDe07wnCsBlbTnY7-5loI8Bd5Z4G_ydBdi0MhgMUz23CiAAxzSf0KSi3UL6y2ePA/pub?gid=1231119869&single=true&output=csv")
-
-input_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTl8IEk2fProQorMu5xKQPdMXl3OQp-c0f6eBXitv0BiVFZ3JSJCde0PtbFXuETgguf6vK8b43FDX1C/pub?gid=1172557183&single=true&output=csv")
+input_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTl8IEk2fProQorMu5xKQPdMXl3OQp-c0f6eBXitv0BiVFZ3JSJCde0PtbFXuETgguf6vK8b43FDX1C/pub?gid=1172557183&single=true&output=csv", show_col_types = FALSE)
 ```
 
 Copy the source data to the repository to keep track of changes:
