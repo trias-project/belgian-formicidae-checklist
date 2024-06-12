@@ -132,13 +132,7 @@ distribution <-
     ),
     countryCode = country_code,
     occurrenceStatus = occurrence_status,
-    #establishmentMeans = establishment_means,
-    establishmentMeans = case_when(
-      degree_of_establishment == "established" |
-        degree_of_establishment == "casual" |
-        degree_of_establishment == "invasive" ~ "introduced",
-      TRUE ~ degree_of_establishment
-    ),
+    establishmentMeans = establishment_means,
     degreeOfEstablishment = degree_of_establishment,
     pathway = pathway_lien,
     # eventDate = case_when(
