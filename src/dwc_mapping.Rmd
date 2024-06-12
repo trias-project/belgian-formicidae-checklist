@@ -250,62 +250,26 @@ We will express native range information from `native_range`, separated and gath
 Create a dataframe with unique taxa only (ignoring multiple distribution rows):
 
 ```{r}
-description <- input_data %>% distinct(taxon_id, .keep_all = TRUE)
-```
-
-Separate values on `|` in a maximum of 3 columns:
-
-```{r}
-description %<>% separate(
-  native_range,
-  into = paste0("range_", c(1:4)),
-  sep = " \\| ",
-  extra = "drop"
-)
-```
-Gather and trim values:
-
-```{r}
-description %<>% gather(key, value, starts_with("range_"), na.rm = TRUE) %>%
-  mutate(value = str_trim(value))
-```
-
-Inspect values:
-
-```{r}
-description %>%
-  group_by(value) %>%
-  count()
-```
-
-Clean native range information in `value` somewhat:
-
-```{r}
-description %<>% mutate(value = str_to_title(value))
-```
-
-### taxonID
-
-```{r}
-description %<>% mutate(dwc_taxonID = taxon_id)
-```
-
-### description
-
-```{r}
-description %<>% mutate(dwc_description = value)
-```
-
-### type
-
-```{r}
-description %<>% mutate(dwc_type = "native range")
-```
-
-### language
-
-```{r}
-description %<>% mutate(dwc_language = "en")
+description <-
+  input_data %>%
+  distinct(taxon_id, .keep_all = TRUE) %>%
+  # Separate values on `|` in a maximum of 4 columns:
+  separate(
+    native_range,
+    into = paste0("range_", c(1:4)),
+    sep = " \\| ",
+    extra = "drop"
+    ) %>%
+  # Gather and trim values:
+  gather(key, value, starts_with("range_"), na.rm = TRUE) %>%
+  mutate(
+    .keep = "none",
+    taxonID = taxon_id,
+    description = str_trim(value),
+    type = "native range",
+    language = "en"
+    ) %>% 
+  arrange(taxonID)
 ```
 
 # Post-processing
@@ -314,21 +278,18 @@ Only keep the Darwin Core columns:
 
 ```{r}
 distribution %<>% select(starts_with("dwc_"))
-description %<>% select(starts_with("dwc_"))
 ```
 
 Drop the `dwc_` prefix:
 
 ```{r}
 colnames(distribution) <- str_remove(colnames(distribution), "dwc_")
-colnames(description) <- str_remove(colnames(description), "dwc_")
 ```
 
 Sort on `taxonID` (to maintain some consistency between updates of the dataset):
 
 ```{r}
 distribution %<>% arrange(taxonID)
-description %<>% arrange(taxonID)
 ```
 
 
@@ -339,13 +300,6 @@ Preview distribution extension:
 distribution %>% head()
 ```
 
-
-
-Preview description extension:
-
-```{r}
-description %>% head(10)
-```
 
 Save to CSV:
 
