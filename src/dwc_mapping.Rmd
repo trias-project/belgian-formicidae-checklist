@@ -64,7 +64,7 @@ input_data <-
     taxon_id = paste(
       "belgian-formicidae-checklist",
       "taxon",
-      vdigest(paste(scientific_name, kingdom), algo = "md5"),
+      .data$taxon_id_hash,
       sep = ":"
     )
   )
